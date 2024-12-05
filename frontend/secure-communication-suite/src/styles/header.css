@@ -1,0 +1,38 @@
+/* Navbar Styling */
+.custom-navbar {
+    background-color: var(--background);
+    padding: 0.8rem 1rem;
+    box-shadow: 0 6px 6px rgba(6, 1, 66, 0.1);
+    height: 80px;
+  }
+  
+  .brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+  }
+  
+  .brand:hover {
+    color: var(--highlight);
+  }
+  
+  .nav-link-custom {
+    font-size: 1rem;
+    margin: 0 1rem;
+    color: var(--primary);
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 2px solid transparent;
+  }
+  
+  .nav-link-custom:hover {
+    color: var(--highlight);
+    border-bottom: 2px solid var(--highlight);
+  }
+  
+  .navbar-toggler {
+    border-color: var(--primary);
+  }
+  
+  .navbar-toggler-icon {
+    background-image: linear-gradient(var(--primary), var(--primary));
+  }
