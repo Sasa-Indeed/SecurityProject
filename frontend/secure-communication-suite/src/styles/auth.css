@@ -64,16 +64,10 @@ body {
 .form-group input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid var(--text-light);
-  border-radius: 4px;
-}
-input {
-  width: 100%;
-  padding: 0.8rem;
-  margin-top: 0.5rem;
   border: 1px solid var(--highlight);
   border-radius: 4px;
 }
+
 
 button {
   width: 100%;
@@ -87,6 +81,10 @@ button {
 
 button:hover {
   background: var(--text-muted);
+}
+
+.toggle-link p:hover{
+  color: var(--text-light);
 }
 
 .toggle-link {

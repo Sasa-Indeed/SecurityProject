@@ -6,10 +6,10 @@ const Footer = () => {
     <footer className="footer-container">
       <div className="footer-content">
         <div className="footer-links">
-          <a href="#about" className="footer-link">About</a>
+          <a href="/about" className="footer-link">About</a>
           <a href="#services" className="footer-link">Services</a>
           <a href="#contact" className="footer-link">Contact</a>
-          <a href="#privacy" className="footer-link">Privacy Policy</a>
+          <a href="/privacy" className="footer-link">Privacy Policy</a>
         </div>
         <div className="footer-social">
           <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
