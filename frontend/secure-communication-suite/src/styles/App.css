@@ -5,16 +5,30 @@
 
 @font-face {
   font-family: 'Raleway';
-  src: url('../assets/fonts/raleway/Raleway-Regular.ttf') format('truetype'),
-       url('../assets/fonts/raleway/Raleway-Bold.ttf') format('truetype'),
-       url('../assets/fonts/raleway/Raleway-Italic.ttf') format('truetype');
+  src: url('../../public/assets/fonts/raleway/Raleway-Regular.ttf') format('truetype'),
+       url('../../public/assets/fonts/raleway/Raleway-Bold.ttf') format('truetype'),
+       url('../../public/assets/fonts/raleway/Raleway-Italic.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 body {
+  background-image: url('../../public/assets/images/Untitled\ design\ \(2\).png');
+  color: var(--text-light);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
   font-family: 'Raleway', sans-serif;
+  overflow-x: hidden;
+  background-attachment: fixed;
 }
+
+* {
+  box-sizing: border-box;
+}
+
 
   
 

@@ -26,7 +26,7 @@ const HomePage = () => {
     {
       title: "Block Cipher Service",
       description:
-        "Encrypt your messages securely using AES or DES. Ideal for transmitting sensitive data over insecure channels.",
+        "Encrypt your messages securely using AES. Ideal for transmitting sensitive data over insecure channels.",
       details:
         "Our Block Cipher Module provides high-speed encryption for bulk data using industry-standard algorithms.",
       buttonText: "Use Block Cipher",
@@ -76,6 +76,39 @@ const HomePage = () => {
         "Use encryption protocols to ensure your emails, messages, and files remain secure over the internet.",
       buttonText: "Secure Internet Services",
       icon: faEnvelope,
+    },
+  ];
+
+  const privacyPolicies = [
+    {
+      title: "Data Encryption",
+      description: "We encrypt your data to keep it safe from unauthorized access.",
+      icon: faLock,
+    },
+    {
+      title: "Secure Authentication",
+      description: "Only verified users can access your sensitive information.",
+      icon: faKey,
+    },
+    {
+      title: "Data Integrity",
+      description: "We ensure your data remains unaltered during transmission.",
+      icon: faFingerprint,
+    },
+    {
+      title: "Email Privacy",
+      description: "Your email and communications are always confidential.",
+      icon: faEnvelope,
+    },
+    {
+      title: "Security Protocols",
+      description: "We adhere to the latest security standards to protect your data.",
+      icon: faShieldAlt,
+    },
+    {
+      title: "User Consent",
+      description: "We collect data only with your explicit consent.",
+      icon: faUserCheck,
     },
   ];
 
@@ -153,6 +186,24 @@ const HomePage = () => {
         </div>
       </section>
 
+      <section className="privacy-policy-section" id="privacy" data-aos="fade-up">
+        <h2>Our Privacy Policy</h2>
+        <div className="policy-network">
+          {privacyPolicies.map((policy, index) => (
+            <div
+              key={index}
+              className="policy-node"
+              data-aos="zoom-in"
+              data-aos-delay={index * 200}
+            >
+              <FontAwesomeIcon icon={policy.icon} className="policy-icon" size="2x" />
+              <h3>{policy.title}</h3>
+              <p>{policy.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="contact-section" id="contact" data-aos="fade-up">
         <h2>Contact Us</h2>
         <form className="contact-form">
@@ -168,6 +219,7 @@ const HomePage = () => {
           <button type="submit" className="btn-submit">Submit</button>
         </form>
       </section>
+
     </div>
   );
 };

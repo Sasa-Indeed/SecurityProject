@@ -6,17 +6,6 @@
   --highlight: #d5370b;
 }
 
-body {
-  background-image: url('../assets/images/Untitled\ design\ \(2\).png');
-  color: var(--text-light);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin: 0;
-  padding: 0;
-  font-family: 'Raleway', sans-serif;
-}
-
 .auth-page {
   display: flex;
   justify-content: center;
