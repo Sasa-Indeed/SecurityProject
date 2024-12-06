@@ -1,19 +1,4 @@
-:root {
-    --primary: #f0f3fa;
-    --background: #111c2d;
-    --text-light: #2b2a2c;
-    --text-muted: #f04419;
-    --highlight: #d5370b;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--background);
-    color: var(--text-light);
-    font-family: "Raleway", sans-serif;
-  }
-  
+ 
   .home-header {
     text-align: center;
     padding: 50px 20px;
@@ -268,3 +253,68 @@ textarea:focus {
 .btn-submit:hover {
   background-color: var(--text-muted);
 }
+
+.privacy-policy-section {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: var(--primary);
+}
+
+.privacy-policy-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: var(--text-light);
+}
+
+.policy-network {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  justify-content: center;
+  position: relative;
+}
+
+.policy-node {
+  background: linear-gradient(135deg, var(--background), #230a62); /* Example gradient */
+  border-radius: 50%;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(98, 4, 4, 0.1);
+  position: relative;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.policy-node:hover {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #230a62, var(--background)); /* Hover gradient effect */
+}
+
+
+.policy-icon {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.policy-node h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+.policy-node p {
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.policy-network::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(circle, transparent 80%, rgba(255, 0, 0, 0.2));
+  border-radius: 50%;
+  z-index: -1;
+}
+

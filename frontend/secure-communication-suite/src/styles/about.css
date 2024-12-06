@@ -1,0 +1,112 @@
+.about-page {
+    font-family: 'Raleway', sans-serif;
+  }
+  
+  .about-header {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(45deg, var(--highlight), #5e0606);
+    color: var(--primary);
+  }
+  
+  .about-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .about-header p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+  
+  .about-mission {
+    display: flex;
+    align-items: center;
+    padding: 4rem 2rem;
+    gap: 2rem;
+  }
+  
+  .mission-content {
+    flex: 1;
+  }
+
+  .mission-content h2 {
+    color: var(--text-muted);
+  }
+
+  .mission-content p {
+    color: var(--primary);
+  }
+
+  .mission-image {
+    flex: 1;
+  }
+  
+  .mission-image img {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .about-values {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--background);
+  }
+  
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .value-card {
+    background: var(--primary);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .value-icon {
+    font-size: 2.5rem;
+    color: var(--highlight);
+    margin-bottom: 1rem;
+  }
+  
+  .about-team {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--primary);
+  }
+
+  .about-team h2 {
+    color: var(--text-muted);
+  } 
+  
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .team-member {
+    text-align: center;
+  }
+  
+  .team-photo {
+    width: 70%;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 3px solid var(--highlight);
+  }
+
+  
+  
