@@ -3,3 +3,11 @@ uvicorn
 pycryptodome
 python-jose
 passlib
+python-dotenv
+pymongo
+pydantic
+pyjwt
+pytest
+python-jose
+httpx
+bcrypt
