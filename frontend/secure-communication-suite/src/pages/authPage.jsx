@@ -3,15 +3,13 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "./../styles/auth.css";
 
-
-
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   useEffect(() => {
     AOS.init({
-      duration: 1000, 
-      easing: "ease-in-out"
+      duration: 1000,
+      easing: "ease-in-out",
     });
   }, []);
 
@@ -19,14 +17,20 @@ const AuthPage = () => {
     setIsLogin((prev) => !prev);
   };
 
+  const handleLogin = (event) => {
+    event.preventDefault();
+    console.log("Our API guy will be implementing this in sha' allah");
+  };
+
+  const handleSignup = (event) => {
+    event.preventDefault();
+    console.log("This too please ya b4mohnds");
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-card" data-aos="fade-up">
-        <div
-          className="auth-message"
-          data-aos="fade-right"
-          data-aos-delay="200"
-        >
+        <div className="auth-message" data-aos="fade-right" data-aos-delay="200">
           <h2>{isLogin ? "Welcome Back!" : "Welcome On Board!"}</h2>
           <p>
             {isLogin
@@ -34,13 +38,9 @@ const AuthPage = () => {
               : "Register to start using our encryption and security services."}
           </p>
         </div>
-        <div
-          className="auth-form"
-          data-aos="fade-left"
-          data-aos-delay="400"
-        >
+        <div className="auth-form" data-aos="fade-left" data-aos-delay="400">
           <h3>{isLogin ? "Login" : "Sign Up"}</h3>
-          <form>
+          <form onSubmit={isLogin ? handleLogin : handleSignup}>
             {isLogin ? (
               <>
                 <div className="form-group" data-aos="fade-in">
@@ -84,18 +84,16 @@ const AuthPage = () => {
                 </div>
               </>
             )}
-            <button
+            <input
               type="submit"
+              value={isLogin ? "Login" : "Sign Up"}
+              className="auth-submit"
               data-aos="zoom-in"
               data-aos-delay="600"
-            >
-              {isLogin ? "Login" : "Sign Up"}
-            </button>
+            />
           </form>
           <p className="toggle-link" data-aos="fade-in" data-aos-delay="800">
-            {isLogin
-              ? "Not registered yet?"
-              : "Already have an account?"}{" "}
+            {isLogin ? "Not registered yet?" : "Already have an account?"}{" "}
             <span onClick={toggleForm}>
               {isLogin ? "Sign Up" : "Login"}
             </span>
@@ -107,5 +105,3 @@ const AuthPage = () => {
 };
 
 export default AuthPage;
-
-
