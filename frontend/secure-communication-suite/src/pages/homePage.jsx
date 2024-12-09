@@ -75,7 +75,7 @@ const HomePage = () => {
         "Secure internet services like email using cryptography. Protect sensitive information during transmission.",
       details:
         "Use encryption protocols to ensure your emails, messages, and files remain secure over the internet.",
-      buttonText: "Secure Internet Services",
+      buttonText: "Secure Email Services",
       icon: faEnvelope,
     },
   ];
