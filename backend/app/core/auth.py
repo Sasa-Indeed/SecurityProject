@@ -21,7 +21,8 @@ def register_user(email: str, password: str):
 
     hashed_pwd = hash_password(password)
     user_data = {"email": email, "hashed_password": hashed_pwd}
-    users.insert_one(user_data)
+    result = users.insert_one(user_data)
+    print(f"Inserted ID: {result.inserted_id}")
     return {"msg": "User registered successfully"}
 
 def authenticate_user(email: str, password: str):
