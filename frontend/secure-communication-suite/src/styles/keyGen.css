@@ -1,0 +1,91 @@
+
+  .generate-key-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .key-card {
+    background-color: var(--primary);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .key-card-title {
+    color: var(--text-light);
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .form-label {
+    color: var(--text-light);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .form-select {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 2px solid var(--text-muted);
+    border-radius: 8px;
+    color: var(--text-light);
+    background-color: var(--primary);
+    outline: none;
+  }
+  
+  .form-select:focus {
+    border-color: var(--highlight);
+    box-shadow: 0 0 4px var(--highlight);
+  }
+  
+  .steps-container {
+    background-color: var(--background);
+    color: var(--primary);
+    padding: 15px;
+    border-left: 4px solid var(--highlight);
+    border-radius: 10px;
+    text-align: left;
+    margin: 20px 0;
+  }
+  
+  .steps-container h2 {
+    margin-bottom: 15px;
+  }
+  
+  .steps-container ol {
+    padding-left: 20px;
+  }
+  
+  .steps-container li {
+    margin-bottom: 10px;
+  }
+  
+  .generate-key-button {
+    background-color: var(--highlight);
+    color: var(--primary);
+    padding: 10px 30px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .generate-key-button:hover {
+    background-color: var(--text-muted);
+    transform: scale(1.05);
+  }
+  
