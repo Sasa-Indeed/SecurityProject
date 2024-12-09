@@ -275,7 +275,7 @@ textarea:focus {
 }
 
 .policy-node {
-  background: linear-gradient(135deg, var(--background), #230a62); /* Example gradient */
+  background: linear-gradient(135deg, var(--background), #230a62);
   border-radius: 50%;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(98, 4, 4, 0.1);
@@ -286,7 +286,7 @@ textarea:focus {
 
 .policy-node:hover {
   transform: scale(1.1);
-  background: linear-gradient(135deg, #230a62, var(--background)); /* Hover gradient effect */
+  background: linear-gradient(135deg, #230a62, var(--background));
 }
 
 

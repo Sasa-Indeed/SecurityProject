@@ -1,0 +1,57 @@
+:root {
+    --primary-bg: #f0f3fa;
+    --background: #111c2d;
+    --text-light: #2b2a2c;
+    --highlight: #d5370b;
+    --button-bg: #f0f3fa;
+    --button-bg-hover: #d5370b;
+  }
+  
+  .not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin-top: 200px;
+    margin-bottom: 200px;
+  }
+  
+  .not-found-content {
+    background-color: var(--primary-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .not-found-title {
+    font-size: 6rem;
+    font-weight: bold;
+    color: var(--highlight);
+    margin-bottom: 20px;
+  }
+  
+  .not-found-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: var(--text-light);
+  }
+  
+  .not-found-btn {
+    background-color: var(--button-bg);
+    color: var(--text-light);
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    border: 2px solid var(--highlight);
+  }
+  
+  .not-found-btn:hover {
+    background-color: var(--button-bg-hover);
+    color: var(--primary-bg);
+  }
+  
