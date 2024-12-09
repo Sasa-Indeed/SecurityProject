@@ -58,7 +58,7 @@
 }
 
 
-button {
+button, input[type="submit"] {
   width: 100%;
   padding: 0.75rem;
   background: var(--highlight);
@@ -68,7 +68,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:hover, input[type="submit"]:hover {
   background: var(--text-muted);
 }
 
