@@ -12,6 +12,7 @@ import {
   faShieldAlt, 
   faUserCheck 
 } from "@fortawesome/free-solid-svg-icons";
+import HomeHeader from "../components/homeHeader";
 
 const HomePage = () => {
   useEffect(() => {
@@ -114,13 +115,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <header className="home-header">
-        <h1 data-aos="fade-down">Welcome to Security Express</h1>
-        <p data-aos="fade-up" data-aos-delay="200">
-          Empowering your data with cutting-edge cryptographic solutions.
-        </p>
-      </header>
-
+      <HomeHeader />
       <section className="services-section" id="services">
         <h2 data-aos="fade-down">Explore Our Services</h2>
         <Carousel interval={4000} indicators={true} controls={true} className="services-carousel">
