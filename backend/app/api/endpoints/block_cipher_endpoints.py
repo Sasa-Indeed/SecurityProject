@@ -44,7 +44,7 @@ class CipherManager:
         return cls._current_cipher
     
 
-@router.post("/AES_encrypt")
+@router.post("/encrypt")
 async def encrypt_endpoint(request: AESEncryptRequest):
     """
     Encrypt the given plaintext using a provided key
@@ -64,7 +64,7 @@ async def encrypt_endpoint(request: AESEncryptRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.post("/AES_decrypt")
+@router.post("/decrypt")
 async def decrypt_endpoint(request: AESDecryptRequest):
     """
     Decrypt the given encrypted text using a provided key
