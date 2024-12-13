@@ -31,3 +31,8 @@ def authenticate_user(email: str, password: str):
     if not user or not verify_password(password, user["hashed_password"]):
         return None
     return user
+
+def get_all_users():
+    users = db_instance.get_collection("users")
+    all_users = list(users.find({}))  # Fetch all users as they are
+    return all_users

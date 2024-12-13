@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from backend.app.core.auth import register_user, authenticate_user, create_access_token
+from backend.app.core.auth import register_user, authenticate_user, create_access_token, get_all_users
 
 router = APIRouter()
 
@@ -28,3 +28,7 @@ async def login_user_endpoint(request: LoginRequest):
 
     access_token = create_access_token(data={"sub": user["email"]})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/users")
+async def get_all_users_endpoint():
+    return get_all_users()
