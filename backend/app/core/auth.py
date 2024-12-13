@@ -3,6 +3,9 @@ from jose import jwt
 from .hashing import hash_password, verify_password
 from ..database.session import db_instance
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 ALGORITHM = "HS256"
