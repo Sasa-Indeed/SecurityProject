@@ -14,7 +14,6 @@ const DashboardPage = () => {
     setSelectedSection(section);
   };
 
-  // Mr. sakr you have full power over these functions 3ee4 7yatk
   useEffect(() => {
     // Fetching emailss
     axios.get("/api/emails")
