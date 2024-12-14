@@ -1,15 +1,13 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
 import os
 
-class Database:
-    _instance = None
+load_dotenv()
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(Database, cls).__new__(cls)
-            cls._instance.client = MongoClient(os.getenv("MONGO_URI"))
-            cls._instance.db = cls._instance.client.get_database(os.getenv("DB_NAME", "default"))
-        return cls._instance
+class Database:
+    def __init__(self):
+        self.client = MongoClient(os.getenv("MONGO_URI"))
+        self.db = self.client.get_database(os.getenv("DB_NAME", "default"))
 
     def get_collection(self, collection_name):
         return self.db[collection_name]
