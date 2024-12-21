@@ -1,25 +1,20 @@
-from pydantic import BaseModel, Field, EmailStr
-from datetime import datetime, timezone
-from typing import Optional
-from bson import ObjectId
+from pydantic import BaseModel
+from datetime import datetime
 
 class Email(BaseModel):
-
-    id: int
-    sender_email: EmailStr
-    recipient_email: EmailStr
-    subject: str = Field(max_length=255)
+    email_id: int
+    sender_email: str
+    recipient_email: str
+    subject: str
     body: str
-    hash: str = Field(max_length=64)
+    hash: str
     encrypted_aes_key: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime
+
+
+    def to_dict(self):
+        return self.model_dump(exclude_unset=True)
 
     class Config:
-        populate_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
-def email_dict(email):
-    email["_id"] = str(email["_id"])
-    return email
+        from_attributes = True
 
