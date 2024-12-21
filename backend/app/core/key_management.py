@@ -22,13 +22,13 @@ This module implements secure methods for key management, including:
 
 Secure methods for key management are achieved by:
 - Using industry-standard cryptographic libraries like `cryptography` for secure RSA and AES key generation.
-- Ensuring data integrity and security by storing RSA keys in PEM format and AES keys as securely generated random bytes.
+- Ensuring data integrity and security by storing RSA keys in PEM format (encrypted using AES) and AES keys as securely generated random bytes.
 - Enforcing constraints to prevent misuse, such as allowing only one RSA key pair per user while supporting multiple AES keys.
 - Using MongoDB for efficient and secure storage of keys, indexed by user email for fast retrieval.
 
 PEM Format:
 - PEM (Privacy-Enhanced Mail) is a standardized, text-based format for encoding binary cryptographic keys or certificates.
-- Keys are serialized into PEM format using Base64 encoding, making them readable and interoperable with most cryptographic tools.
+- RSA private keys are serialized into PEM format and encrypted using AES before storage, ensuring both compatibility and security.
 - PEM files include clear delimiters, such as:
   - `-----BEGIN RSA PRIVATE KEY-----` for private keys.
   - `-----BEGIN PUBLIC KEY-----` for public keys.
@@ -36,33 +36,30 @@ PEM Format:
 
 Key Encryption Key (KEK):
 - A KEK is a cryptographic key used to encrypt other keys.
-- It ensures that sensitive keys (e.g., AES keys) are not stored in plaintext, even in secure databases.
+- It ensures that sensitive keys (e.g., RSA private keys and AES keys) are not stored in plaintext, even in secure databases.
 - The KEK itself is securely stored, typically in an HSM, a cloud-based KMS, or as an environment variable.
-
+- The KEK is used to encrypt RSA private keys in PEM format and AES keys before they are stored in the database.
 """
 
 
 def generate_rsa_key(user_email: str):
     """
-    Generate an RSA key pair for the given user email.
+    Generate and securely store an RSA key pair for a given user email.
 
     Steps:
     1. Check if the user already has an RSA key pair. Raise an error if one exists.
-    2. Use the `cryptography` library to generate a 2048-bit RSA private key.
-    3. Extract the public key from the private key.
-    4. Serialize the keys in PEM format to ensure secure and standardized storage.
-        - PEM (Privacy-Enhanced Mail) format:
-            - Text-based encoding of binary key data using Base64.
-            - Includes clear delimiters like `-----BEGIN RSA PRIVATE KEY-----`.
-            - Ensures compatibility with external tools and protocols like OpenSSL.
-    5. Store the keys in the MongoDB `keys` collection, indexed by `user_email`.
-    6. Return the public key to the user for sharing/distribution.
+    2. Generate a 2048-bit RSA private key.
+    3. Extract and serialize the public key in PEM format.
+    4. Serialize the private key in PEM format with no encryption (temporarily).
+    5. Encrypt the private key PEM using AES encryption with a Key Encryption Key (KEK).
+    6. Store both keys in the MongoDB `keys` collection, with the private key encrypted.
+    7. Return the public key and database ID.
 
     Parameters:
-        user_email (str): The email address of the user.
+        user_email (str): Email address of the user.
 
     Returns:
-        dict: A dictionary containing the public key and the database ID of the stored key.
+        dict: A dictionary containing the public key in PEM format and the database ID.
 
     Raises:
         ValueError: If the user already has an RSA key pair.
@@ -84,14 +81,47 @@ def generate_rsa_key(user_email: str):
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
 
+    # Encrypt private key PEM
+    encrypted_private_key = encrypt_aes_key(private_key_pem, KEK)
+
     key_data = {
         "user_email": user_email,
         "key_type": "RSA",
-        "key_data": {"public_key": public_key_pem.decode(), "private_key": private_key_pem.decode()},
-        "created_at": datetime.utcnow(),
+        "key_data": {
+            "public_key": public_key_pem.decode(),  # Public key in PEM format
+            "private_key": encrypted_private_key,  # Encrypted private key in PEM format
+        },
     }
     result = keys_collection.insert_one(key_data)
     return {"id": str(result.inserted_id), "public_key": public_key_pem.decode()}
+
+def decrypt_rsa_private_key(encrypted_private_key_hex: str):
+    """
+    Decrypt an encrypted RSA private key.
+
+    Steps:
+    1. Decrypt the private key using AES encryption with the Key Encryption Key (KEK).
+    2. Load the decrypted PEM-encoded private key into an RSA key object.
+
+    Parameters:
+        encrypted_private_key_hex (str): The encrypted private key as a hex string.
+
+    Returns:
+        rsa.RSAPrivateKey: The decrypted RSA private key object.
+
+    Raises:
+        ValueError: If the decryption fails or the private key is invalid.
+    """
+    # Decrypt the encrypted private key using the KEK
+    decrypted_key_pem = decrypt_aes_key(encrypted_private_key_hex, KEK)
+
+    # Load the RSA private key from the decrypted PEM
+    private_key = serialization.load_pem_private_key(
+        decrypted_key_pem,
+        password=None,
+        backend=default_backend()
+    )
+    return private_key
 
 
 def encrypt_aes_key(aes_key: bytes, kek: bytes) -> str:
@@ -151,7 +181,6 @@ def generate_aes_key(user_email: str):
         "user_email": user_email,
         "key_type": "AES",
         "key_data": {"key_value": encrypted_aes_key},
-        "created_at": datetime.utcnow(),
     }
     result = keys_collection.insert_one(key_data)
 
@@ -177,12 +206,6 @@ def fetch_keys(user_email: str):
 
     transformed_keys = []
     for key in keys:
-        key_type = key["key_type"]
-        if key_type == "AES":
-            # Decrypt AES keys before returning
-            key["key_data"]["key_value"] = decrypt_aes_key(
-                key["key_data"]["key_value"], KEK
-            ).hex()
         key["id"] = str(key["_id"])  # Map MongoDB `_id` to `id`
         del key["_id"]  # Remove the raw `_id` field
         transformed_keys.append(key)
