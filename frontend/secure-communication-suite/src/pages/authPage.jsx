@@ -19,12 +19,12 @@ const AuthPage = () => {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    console.log("Our API guy will be implementing this in sha' allah");
+    console.log("");
   };
 
   const handleSignup = (event) => {
     event.preventDefault();
-    console.log("This too please ya b4mohnds");
+    console.log("");
   };
 
   return (
