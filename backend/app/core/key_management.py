@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 import os
 from bson import ObjectId
+from cryptography.hazmat.primitives import padding
 
 
 keys_collection = db_instance.get_collection("keys")
@@ -126,35 +127,42 @@ def decrypt_rsa_private_key(encrypted_private_key_hex: str):
 
 def encrypt_aes_key(aes_key: bytes, kek: bytes) -> str:
     """
-    Encrypt an AES key using the Key Encryption Key (KEK).
+    Encrypt an AES key or data using the Key Encryption Key (KEK).
 
     Parameters:
-        aes_key (bytes): The plaintext AES key to be encrypted.
+        aes_key (bytes): The plaintext AES key or data to be encrypted.
         kek (bytes): The Key Encryption Key used for encryption.
 
     Returns:
-        str: The encrypted AES key in hexadecimal format.
+        str: The encrypted AES key or data in hexadecimal format.
     """
+    padder = padding.PKCS7(algorithms.AES.block_size).padder()
+    padded_data = padder.update(aes_key) + padder.finalize()
+
     cipher = Cipher(algorithms.AES(kek), modes.ECB(), backend=default_backend())
     encryptor = cipher.encryptor()
-    encrypted_key = encryptor.update(aes_key) + encryptor.finalize()
+    encrypted_key = encryptor.update(padded_data) + encryptor.finalize()
     return encrypted_key.hex()
 
 def decrypt_aes_key(encrypted_key_hex: str, kek: bytes) -> bytes:
     """
-    Decrypt an AES key using the Key Encryption Key (KEK).
+    Decrypt an AES key or data using the Key Encryption Key (KEK).
 
     Parameters:
-        encrypted_key_hex (str): The encrypted AES key in hexadecimal format.
+        encrypted_key_hex (str): The encrypted AES key or data in hexadecimal format.
         kek (bytes): The Key Encryption Key used for decryption.
 
     Returns:
-        bytes: The decrypted AES key in plaintext.
+        bytes: The decrypted AES key or data in plaintext.
     """
     cipher = Cipher(algorithms.AES(kek), modes.ECB(), backend=default_backend())
     decryptor = cipher.decryptor()
     encrypted_key = bytes.fromhex(encrypted_key_hex)
-    return decryptor.update(encrypted_key) + decryptor.finalize()
+    padded_data = decryptor.update(encrypted_key) + decryptor.finalize()
+
+    unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
+    data = unpadder.update(padded_data) + unpadder.finalize()
+    return data
 
 
 def generate_aes_key(user_email: str):
