@@ -5,6 +5,7 @@ from backend.app.database.session import db_instance
 
 load_dotenv()
 
+
 router = APIRouter()
 
 email_collection = db_instance.get_collection("emails")
