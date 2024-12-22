@@ -4,6 +4,7 @@ from .hashing import hash_password, verify_password
 from ..database.session import db_instance
 import os
 from dotenv import load_dotenv
+from bson import ObjectId
 
 load_dotenv()
 
@@ -37,5 +38,8 @@ def authenticate_user(email: str, password: str):
 
 def get_all_users():
     users = db_instance.get_collection("users")
-    all_users = list(users.find({}))  # Fetch all users as they are
+    all_users = list(users.find({}))
+    for user in all_users:
+        if "_id" in user:
+            user["_id"] = str(user["_id"])
     return all_users
