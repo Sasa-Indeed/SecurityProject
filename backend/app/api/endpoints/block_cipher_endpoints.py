@@ -1,6 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, conbytes
 from backend.app.core.block_cipher_module import AESCipher
+import backend.app.core.key_management as keyManagement
+from dotenv import load_dotenv
+load_dotenv()
+
 
 router = APIRouter()
 
@@ -53,8 +57,12 @@ async def encrypt_endpoint(request: AESEncryptRequest):
     - Returns base64 encoded encrypted text
     """
     try:
+
+        # Decrypt the key     
+        decrypted_key =  keyManagement.decrypt_aes_key(request.key, keyManagement.KEK)
+
         # Initialize cipher with the provided key
-        cipher = CipherManager.initialize_cipher(request.key)
+        cipher = CipherManager.initialize_cipher(decrypted_key)
         
         # Encrypt the plaintext
         encrypted_text = cipher.encrypt(request.plaintext)
@@ -73,8 +81,12 @@ async def decrypt_endpoint(request: AESDecryptRequest):
     - Returns the original plaintext
     """
     try:
+
+        # Decrypt the key     
+        decrypted_key =  keyManagement.decrypt_aes_key(request.key, keyManagement.KEK)
+
         # Initialize cipher with the provided key
-        cipher = CipherManager.initialize_cipher(request.key)
+        cipher = CipherManager.initialize_cipher(decrypted_key)
         
         # Decrypt the text
         decrypted_text = cipher.decrypt(request.encrypted_text)
