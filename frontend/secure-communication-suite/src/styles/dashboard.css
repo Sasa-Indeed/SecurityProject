@@ -159,8 +159,4 @@
     background-color: var(--text-muted);
   }
 
-  ::placeholder {
-    color: var(--text-muted);
-  }
-  
   

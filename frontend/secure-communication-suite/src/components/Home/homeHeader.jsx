@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./../styles/home.css";  
 
 const HomeHeader = () => {
   const [text, setText] = useState("");

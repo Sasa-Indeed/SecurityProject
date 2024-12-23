@@ -86,4 +86,22 @@ button:hover, input[type="submit"]:hover {
   cursor: pointer;
   text-decoration: underline;
 }
+.error-message {
+  color: var(--highlight);
+  font-size: 12px;
+  margin-top: 5px;
+}
 
+.password-input-container {
+  position: relative;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--highlight);
+}
