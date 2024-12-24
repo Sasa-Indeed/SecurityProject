@@ -26,6 +26,14 @@ async def get_emails(current_user: str = Depends(get_current_user)):
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/sent", response_model=list[Email])
+async def get_sent_emails(current_user: str = Depends(get_current_user)):
+    try:
+        emails = email_service.get_sent_emails(current_user)
+        return emails
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/inbox/view-email", response_model=Email)
 async def get_email(email_id: int, current_user: str = Depends(get_current_user)):
     try:
