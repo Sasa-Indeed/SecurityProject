@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
-from backend.app.core.auth import register_user, authenticate_user, create_access_token, get_all_users
+from backend.app.core.auth import register_user, authenticate_user, create_access_token, get_all_users, get_current_user
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
@@ -48,3 +48,7 @@ async def logout():
     response = JSONResponse(content={"message": "Logout successful"})
     response.delete_cookie(key="access_token")
     return response
+
+@router.get("/validate-session")
+async def validate_session(request: Request, current_user: str = Depends(get_current_user)):
+    return {"isValid": True}
