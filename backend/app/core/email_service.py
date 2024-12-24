@@ -31,6 +31,16 @@ class EmailService:
         except PyMongoError as e:
             raise RuntimeError(f"Database error while fetching emails: {str(e)}")
 
+    def get_sent_emails(self, sender_email: str) -> list[Email]:
+        """Retrieve all emails for a specific sender."""
+        try:
+            collection = self._get_collection()
+            emails_cursor = collection.find({"sender_email": sender_email})
+            emails_data = list(emails_cursor)
+            return [Email(**email) for email in emails_data]
+        except PyMongoError as e:
+            raise RuntimeError(f"Database error while fetching emails: {str(e)}")
+
     def get_email_by_id(self, email_id: int, user_email: str) -> Email:
         """Retrieve a specific email by ID if the user is authorized."""
         try:
