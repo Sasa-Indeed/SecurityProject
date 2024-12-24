@@ -222,25 +222,26 @@ def fetch_keys(user_email: str):
 
 
 
-def delete_key(key_id: str):
+def delete_key(key_id: str, user_email: str):
     """
-    Delete a specific key by its database ID.
+    Delete a specific key by its database ID, ensuring it belongs to the specified user.
 
     Steps:
-    1. Validate the `key_id` and ensure it corresponds to an existing key.
-    2. Delete the key from the MongoDB `keys` collection.
+    1. Validate the `key_id` and ensure it corresponds to an existing key owned by the user.
+    2. Delete the key from the MongoDB `keys` collection if it matches the user.
     3. Return a success message if the operation is successful.
 
     Parameters:
         key_id (str): The database ID of the key to delete.
+        user_email (str): The email address of the user.
 
     Returns:
         dict: A success message.
 
     Raises:
-        ValueError: If the key does not exist.
+        ValueError: If the key does not exist or does not belong to the user.
     """
-    result = keys_collection.delete_one({"_id": ObjectId(key_id)})
+    result = keys_collection.delete_one({"_id": ObjectId(key_id), "user_email": user_email})
     if result.deleted_count == 0:
-        raise ValueError("Key not found")
+        raise ValueError("Key not found or does not belong to the user")
     return {"msg": "Key deleted successfully"}
