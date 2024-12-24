@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from backend.app.core.auth import register_user, authenticate_user, create_access_token, get_all_users
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
@@ -27,8 +28,23 @@ async def login_user_endpoint(request: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token(data={"sub": user["email"]})
-    return {"access_token": access_token, "token_type": "bearer"}
+    response = JSONResponse(content={"message": "Login successful"})
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        samesite="lax",
+        secure=False,
+        max_age=7200
+    )
+    return response
 
 @router.get("/users")
 async def get_all_users_endpoint():
     return get_all_users()
+
+@router.post("/logout")
+async def logout():
+    response = JSONResponse(content={"message": "Logout successful"})
+    response.delete_cookie(key="access_token")
+    return response
