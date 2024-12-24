@@ -1,19 +1,16 @@
 from datetime import datetime, timedelta, timezone
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Request, HTTPException, status
 from jose import jwt, JWTError
 from .hashing import hash_password, verify_password
 from ..database.session import db_instance
 import os
 from dotenv import load_dotenv
-from bson import ObjectId
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
@@ -47,9 +44,15 @@ def get_all_users():
             user["_id"] = str(user["_id"])
     return all_users
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(request: Request):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        token = request.cookies.get("access_token")
+        if token is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token not found in cookies"
+            )
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         email: str = payload.get("sub")
         if email is None:
             raise HTTPException(
