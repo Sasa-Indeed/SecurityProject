@@ -1,16 +1,18 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import Request, HTTPException, status
 from jose import jwt, JWTError
-from .hashing import hash_password, verify_password
+from .hashing import hash_password, verify_password, decrypt_with_password
 from ..database.session import db_instance
 import os
 from dotenv import load_dotenv
+import secrets
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+challenges = {}
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
@@ -66,3 +68,29 @@ def get_current_user(request: Request):
             detail="Could not validate credentials"
         )
 
+
+def generate_challenge_logic(email: str) -> str:
+    challenge = secrets.token_hex(16)
+    challenges[email] = challenge
+    return challenge
+
+def validate_challenge_logic(email: str, encrypted_challenge: str) -> str:
+    if email not in challenges:
+        raise HTTPException(status_code=400, detail="Challenge not found or expired")
+
+    original_challenge = challenges.pop(email)
+
+    user = db_instance.get_collection("users").find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Decrypt the encrypted challenge using the user's hashed password
+    hashed_password = user["hashed_password"]
+    decrypted_challenge = decrypt_with_password(encrypted_challenge, hashed_password)
+
+    # Compare decrypted challenge with the original
+    if decrypted_challenge != original_challenge:
+        raise HTTPException(status_code=401, detail="Invalid challenge response")
+
+    # Authentication successful, create and return an access token
+    return create_access_token(data={"sub": email})
