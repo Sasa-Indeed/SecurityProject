@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
-from backend.app.core.auth import register_user, authenticate_user, create_access_token, get_all_users, get_current_user
+from backend.app.core.auth import register_user, authenticate_user, create_access_token, get_all_users, get_current_user, generate_challenge_logic, validate_challenge_logic
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
@@ -12,6 +12,14 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class ChallengeRequest(BaseModel):
+    email: str
+
+class ChallengeValidationRequest(BaseModel):
+    email: str
+    encrypted_challenge: str
+
 
 @router.post("/register")
 async def register_user_endpoint(request: RegisterRequest):
@@ -52,3 +60,13 @@ async def logout():
 @router.get("/validate-session")
 async def validate_session(request: Request, current_user: str = Depends(get_current_user)):
     return {"isValid": True}
+
+@router.post("/challenge")
+async def generate_challenge(request: ChallengeRequest):
+    challenge = generate_challenge_logic(request.email)
+    return {"challenge": challenge}
+
+@router.post("/validate-challenge")
+async def validate_challenge(request: ChallengeValidationRequest):
+    access_token = validate_challenge_logic(request.email, request.encrypted_challenge)
+    return {"access_token": access_token}
