@@ -1,125 +1,78 @@
 :root {
-    --primary-bg: #f0f3fa;
-    --background: #111c2d;
-    --text-light: #2b2a2c;
-    --text-muted: #f04419;
-    --highlight: #d5370b;
-    --input-border: #ccc;
-    --button-bg: #f0f3fa;
-    --button-bg-hover: #d5370b;
-    --button-border: #d5370b;
-  }
-  
-  .email h2 {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--highlight);
-    margin-bottom: 20px;
-  }
-  
-  .form-control, textarea {
-    background-color: var(--primary-bg);
-    border-radius: 4px;
-    border: 1px solid var(--input-border);
-    padding: 12px;
-    font-size: 1rem;
-    color: var(--text-light);
-    width: 100%;
-  }
-  
-  .form-control:focus, textarea:focus {
-    border-color: var(--highlight);
-  }
-  
-  .email button {
-    background-color: var(--button-bg);
-    color: var(--text-light);
-    border: 1px solid var(--button-border);
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-  }
-  
-  .email button:hover {
-    background-color: var(--button-bg-hover);
-  }
-  
-  .email button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-  }
-  
-  .view-email-list, .hash-verification {
-    margin-top: 20px;
-  }
-  
-  .email textarea[readonly] {
-    background-color: var(--primary-bg);
-    border: 1px solid #ddd;
-  }
-  
-  .view-email-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .view-email-list .view-email-item {
-    background-color: var(--primary-bg);
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .view-email-list .view-email-item:hover {
-    background-color: var(--highlight);
-    color: var(--primary-bg);
-  }
-  
-  .view-email-item .email-sender {
-    font-weight: bold;
-  }
-  
-  .view-email-item .email-timestamp {
-    font-size: 0.9rem;
-    color: var(--text-light);
-  }
-  
-  .hash-verification p {
-    font-size: 1rem;
-    color: var(--text-muted);
-  }
-  
-  .email-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .email-actions button {
-    margin-right: 10px;
-  }
-  
-  .compose-email-page, .view-email-page {
-    background-color: var(--primary-bg);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .compose-email-page form, .view-email-page form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .compose-email-page textarea, .view-email-page textarea {
-    margin-top: 10px;
-  }
-  
-  .compose-email-page button, .view-email-page button {
-    width: 100%;
-    margin-top: 20px;
-  }
-  
+  --compose-bg-light: #f0f3fa;
+  --compose-bg-dark: #1e2d3d;
+  --compose-text-dark: #111c2d;
+  --compose-accent:  #d5370b;
+  --compose-border-color: #2b2a2c;
+  --compose-btn-bg:  #d5370b;
+  --compose-btn-hover-bg: #f04419;
+}
+
+.compose-email-page {
+  max-width: 1000px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  background: var(--compose-bg-light);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  justify-self: center;
+}
+
+.compose-email-header {
+  color: var(--compose-accent);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.compose-form-group {
+  margin-bottom: 15px;
+}
+
+.compose-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--compose-text-dark);
+  font-weight: 600;
+}
+
+.compose-input, .compose-textarea, .compose-dropdown {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--compose-border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  color: var(--compose-text-dark);
+  background-color: #ffffff;
+}
+
+.compose-textarea {
+  min-height: 100px;
+}
+
+.compose-input:focus, .compose-textarea:focus, .compose-dropdown:focus {
+  outline: none;
+  border-color: var(--compose-accent);
+}
+
+.compose-button {
+  background-color: var(--compose-btn-bg);
+  color: var(--compose-bg-light);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.compose-button:hover {
+  background-color: var(--compose-btn-hover-bg);
+}
+
+.compose-button:disabled {
+  background-color: var(--compose-border-color);
+  cursor: not-allowed;
+}

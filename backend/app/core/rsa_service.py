@@ -1,27 +1,38 @@
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from fastapi import HTTPException
+from .key_management import decrypt_rsa_private_key
 
 class RSACipher:
-    def __init__(self, private_key_path: str, public_key_path: str):
+    def __init__(self, encrypted_private_key: str, public_key: str):
         """
-        Initialize the RSAEncryptionService with the provided private and public key paths.
+        Initialize the RSACipher with the provided encrypted private key (AES encrypted)
+        and public key (plaintext PEM).
         """
-        self.private_key, self.public_key = self.load_keys(private_key_path, public_key_path)
+        self.private_key = self.load_private_key(encrypted_private_key)
+        self.public_key = self.load_public_key(public_key)
 
-    def load_keys(self, private_key_path: str, public_key_path: str):
+    def load_private_key(self, encrypted_private_key: str):
         """
-        Load the RSA private and public keys from the specified file paths.
+        Decrypt the AES-encrypted private key using the `decrypt_rsa_private_key` function.
         """
         try:
-            with open(private_key_path, "rb") as private_file:
-                private_key = serialization.load_pem_private_key(private_file.read(), password=None)
-            with open(public_key_path, "rb") as public_file:
-                public_key = serialization.load_pem_public_key(public_file.read())
-            return private_key, public_key
+            private_key = decrypt_rsa_private_key(encrypted_private_key)
+            return private_key
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error loading keys: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error loading private key: {str(e)}")
+
+    def load_public_key(self, public_key_pem: str):
+        """
+        Load the RSA public key from a PEM-formatted string.
+        """
+        try:
+            public_key = serialization.load_pem_public_key(public_key_pem.encode(), backend=default_backend())
+            return public_key
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error loading public key: {str(e)}")
 
     def encrypt(self, plaintext: str) -> str:
         """

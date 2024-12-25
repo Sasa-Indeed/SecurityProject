@@ -57,19 +57,9 @@ async def encrypt_endpoint(request: AESEncryptRequest):
     - Returns base64 encoded encrypted text
     """
     try:
-        # Check if the key is of 32 bytes
-        if len(request.key) != 32:
-            raise ValueError("Key must be 32 characters long")
-            
-        # Convert string key to bytes
-        key_bytes = request.key.encode('utf-8')
-
-        # Decrypt the key     
-        decrypted_key =  keyManagement.decrypt_aes_key(key_bytes, keyManagement.KEK)
-
+        decrypted_key =  keyManagement.decrypt_aes_key(request.key, keyManagement.KEK)
         # Initialize cipher with the provided key
         cipher = CipherManager.initialize_cipher(decrypted_key)
-        
         # Encrypt the plaintext
         encrypted_text = cipher.encrypt(request.plaintext)
         return {"AES_encrypted_text": encrypted_text}
@@ -87,15 +77,8 @@ async def decrypt_endpoint(request: AESDecryptRequest):
     - Returns the original plaintext
     """
     try:
-        # Check if the key is of 32 bytes
-        if len(request.key) != 32:
-            raise ValueError("Key must be 32 characters long")
-            
-        # Convert string key to bytes
-        key_bytes = request.key.encode('utf-8')
-
         # Decrypt the key     
-        decrypted_key =  keyManagement.decrypt_aes_key(key_bytes, keyManagement.KEK)
+        decrypted_key =  keyManagement.decrypt_aes_key(request.key, keyManagement.KEK)
 
         # Initialize cipher with the provided key
         cipher = CipherManager.initialize_cipher(decrypted_key)

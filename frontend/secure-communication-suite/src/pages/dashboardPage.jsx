@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/dashboard.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getInboxEmails, getSentEmails, getKeys, deleteKey } from "../services/api";
 
 const DashboardPage = () => {
@@ -11,6 +11,8 @@ const DashboardPage = () => {
   const [loadingEmails, setLoadingEmails] = useState(true);
   const [loadingSentEmails, setLoadingSentEmails] = useState(true);
   const [loadingKeys, setLoadingKeys] = useState(true);
+
+  const navigate = useNavigate();
 
   const handleSectionChange = (section) => {
     setSelectedSection(section);
@@ -41,6 +43,10 @@ const DashboardPage = () => {
     fetchData();
   }, []);
 
+  const handleEmailClick = (emailId) => {
+    navigate(`/view-email/${emailId}`);
+  };
+
   const handleDeleteKey = async (keyId) => {
     try {
       await deleteKey(keyId);
@@ -48,6 +54,10 @@ const DashboardPage = () => {
     } catch (error) {
       console.error("Error deleting key:", error);
     }
+  };
+
+  const formatDate = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString();
   };
 
   return (
@@ -97,10 +107,14 @@ const DashboardPage = () => {
             ) : (
               <ul className="email-list">
                 {emails.map((email) => (
-                  <li className="email-item" key={email.email_id}>
+                  <li
+                    className="email-item"
+                    key={email.email_id}
+                    onClick={() => handleEmailClick(email.email_id)}
+                  >
                     <span className="email-sender">{email.sender_email}</span>
                     <span className="email-subject">{email.subject}</span>
-                    <span className="email-timestamp">{email.timestamp}</span>
+                    <span className="email-timestamp">{formatDate(email.timestamp)}</span>
                   </li>
                 ))}
               </ul>
@@ -112,7 +126,6 @@ const DashboardPage = () => {
           <div className="sent-section">
             <h2 className="dash">Sent Emails</h2>
 
-            {/* Compose Email Button */}
             <Link to="/compose-email">
               <button className="action-button">Compose Email</button>
             </Link>
@@ -124,10 +137,14 @@ const DashboardPage = () => {
             ) : (
               <div className="email-tiles">
                 {sentEmails.map((email) => (
-                  <div className="email-tile" key={email.id}>
+                  <div
+                    className="email-tile"
+                    key={email.id}
+                    onClick={() => handleEmailClick(email.id)}
+                  >
                     <span className="email-recipient">{email.recipient}</span>
                     <span className="email-subject">{email.subject}</span>
-                    <span className="email-timestamp">{email.timestamp}</span>
+                    <span className="email-timestamp">{formatDate(email.timestamp)}</span>
                   </div>
                 ))}
               </div>

@@ -28,9 +28,14 @@ const AuthPage = () => {
 
   const handleLogin = async () => {
     try {
+
+      const tempEmail = email;
       const data = await login(email, password);
-      setUserEmail(email);
+      setUserEmail(tempEmail);
+      console.log(setUserEmail(tempEmail));
       console.log("Login success:", data);
+      console.log("Logged in as:", tempEmail);
+  
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error.message);
@@ -43,6 +48,7 @@ const AuthPage = () => {
       console.log("Signup with:", { email, password });
       const data = await signup(email, password);
       setUserEmail(email);
+      console.log(setUserEmail(email))
       console.log("Signup success:", data);
       navigate("/dashboard");
     } catch (error) {

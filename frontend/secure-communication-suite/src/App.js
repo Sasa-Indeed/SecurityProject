@@ -27,7 +27,7 @@ function App() {
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/generate-key" element={<GenerateKeyPage />} />
       <Route path="/compose-email" element={<ComposeEmailPage />} />
-      <Route path="/view-email" element={<ViewEmailPage />} />
+      <Route path="/view-email/:emailId" element={<ViewEmailPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
     <Footer />

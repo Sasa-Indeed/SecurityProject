@@ -171,7 +171,7 @@ export const decryptUsingAES = async (encryptedText, key) => {
 // RSA encryption
 export const encryptUsingRSA = async (plaintext, publicKey) => {
   try {
-    const response = await axiosInstance.post('/rsa/encrypt', { plaintext : plaintext, public_key: publicKey });
+    const response = await axiosInstance.post('/rsa/encrypt', { plaintext : plaintext, key: publicKey });
     return response.data.RSA_encrypted_text;
   } catch (error) {
     console.error("Error encrypting with RSA:", error);
@@ -182,7 +182,7 @@ export const encryptUsingRSA = async (plaintext, publicKey) => {
 // RSA decryption
 export const decryptUsingRSA = async (encryptedText, privateKey) => {
   try {
-    const response = await axiosInstance.post('/rsa/decrypt', { encrypted_text: encryptedText, private_key: privateKey });
+    const response = await axiosInstance.post('/rsa/decrypt', { ciphertext: encryptedText, key: privateKey });
     return response.data.RSA_decrypted_text;
   } catch (error) {
     console.error("Error decrypting with RSA:", error);
