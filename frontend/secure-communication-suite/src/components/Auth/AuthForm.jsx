@@ -2,33 +2,39 @@ import React, { useState } from "react";
 import { validateEmail, validatePassword, matchPasswords } from "../../utils/validators";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const AuthForm = ({ isLogin, handleLogin, handleSignup, toggleForm }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const AuthForm = ({
+  isLogin,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  confirmPassword,
+  setConfirmPassword,
+  handleLogin,
+  handleSignup,
+  toggleForm,
+}) => {
   const [errors, setErrors] = useState({});
-  
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
- 
+
     const fieldErrors = {};
-    
     const emailError = validateEmail(email);
     if (emailError) {
       fieldErrors.email = emailError;
     }
-    
     const passwordError = validatePassword(password);
     if (passwordError) {
       fieldErrors.password = passwordError;
     }
-    
-    const confirmPasswordError = matchPasswords(password, confirmPassword);
-    if (confirmPasswordError) {
-      fieldErrors.confirmPassword = confirmPasswordError;
+    if (!isLogin) {
+      const confirmPasswordError = matchPasswords(password, confirmPassword);
+      if (confirmPasswordError) {
+        fieldErrors.confirmPassword = confirmPasswordError;
+      }
     }
 
     if (Object.keys(fieldErrors).length > 0) {
@@ -37,9 +43,9 @@ const AuthForm = ({ isLogin, handleLogin, handleSignup, toggleForm }) => {
     }
 
     if (isLogin) {
-      handleLogin(email, password);
+      handleLogin();
     } else {
-      handleSignup(email, password);
+      handleSignup();
     }
   };
 
@@ -80,29 +86,27 @@ const AuthForm = ({ isLogin, handleLogin, handleSignup, toggleForm }) => {
         </div>
 
         {!isLogin && (
-          <>
-            <div className="form-group" data-aos="fade-in">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <div className="password-input-container">
-                <input
-                  type={confirmPasswordVisible ? "text" : "password"}
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
-                />
-                <span
-                  className="password-toggle-icon"
-                  onClick={() => setConfirmPasswordVisible((prevState) => !prevState)}
-                >
-                  {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
-                </span>
-              </div>
-              {errors.confirmPassword && (
-                <div className="error-message">{errors.confirmPassword}</div>
-              )}
+          <div className="form-group" data-aos="fade-in">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <div className="password-input-container">
+              <input
+                type={confirmPasswordVisible ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
+              />
+              <span
+                className="password-toggle-icon"
+                onClick={() => setConfirmPasswordVisible((prevState) => !prevState)}
+              >
+                {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
-          </>
+            {errors.confirmPassword && (
+              <div className="error-message">{errors.confirmPassword}</div>
+            )}
+          </div>
         )}
 
         <input
@@ -123,4 +127,3 @@ const AuthForm = ({ isLogin, handleLogin, handleSignup, toggleForm }) => {
 };
 
 export default AuthForm;
-
