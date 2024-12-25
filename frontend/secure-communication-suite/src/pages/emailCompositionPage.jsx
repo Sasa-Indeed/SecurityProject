@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { composeEmail, generateHash, getKeys, encryptUsingRSA, encryptUsingAES } from "../services/api";
+import { composeEmail, generateHash, getKeys, encryptUsingRSA, encryptUsingAES, fetchPK } from "../services/api";
 import '../styles/email.css';
 import { useAuth } from '../context/AuthContext';
 import AOS from "aos";
@@ -85,8 +85,8 @@ const ComposeEmail = () => {
   // Step 4: Encrypt selected AES key using RSA
   const handleEncryptKey = async () => {
     try {
-      //ricipient_public_key :(((((((
-      const response = await encryptUsingRSA(selectedKey);
+      const PK = await fetchPK(recipient);
+      const response = await encryptUsingRSA(selectedKey, PK);
       alert("Key successfully encrypted!");
       return response;
     } catch (error) {
@@ -99,12 +99,6 @@ const ComposeEmail = () => {
     setIsSending(true);
     try {
       const encryptedKeyResponse = await handleEncryptKey();
-      console.log(recipient,
-        userEmail,
-        subject,
-        encryptedEmail,
-        encryptedHash,
-        encryptedKeyResponse)
       await composeEmail(
         recipient,
         userEmail,

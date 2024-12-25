@@ -32,7 +32,6 @@ const AuthPage = () => {
       const tempEmail = email;
       const data = await login(email, password);
       setUserEmail(tempEmail);
-      console.log(setUserEmail(tempEmail));
       console.log("Login success:", data);
       console.log("Logged in as:", tempEmail);
   

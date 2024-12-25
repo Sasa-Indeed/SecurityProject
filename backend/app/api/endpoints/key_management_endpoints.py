@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends
-from backend.app.core.key_management import generate_rsa_key, generate_aes_key, fetch_keys, delete_key
+from fastapi import APIRouter, HTTPException, Depends, Query
+from backend.app.core.key_management import generate_rsa_key, generate_aes_key, fetch_keys, delete_key, fetch_public_key
 from backend.app.core.auth import get_current_user
 from backend.app.models.key_generation_request import KeyGenerationRequest
 from backend.app.models.key_deletion_request import KeyDeleteRequest
+from backend.app.models.public_key_request_body import PKRequestBody
 
 router = APIRouter()
 @router.post("/gen")
@@ -30,5 +31,12 @@ def get_keys(user_email: str = Depends(get_current_user)):
 def remove_key(body: KeyDeleteRequest, user_email: str = Depends(get_current_user)):
     try:
         return delete_key(body.key_id, user_email)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/fetch-public-key")
+def fetch_pub_key(email: str = Query(...)):
+    try:
+        return fetch_public_key(email)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -11,7 +11,7 @@ async def encrypt(data: EncryptRequest):
     Encrypt plaintext using the provided public key.
     """
     try:
-        rsa_service = RSACipher(encrypted_private_key=None, public_key=data.key)
+        rsa_service = RSACipher(data.key)
         ciphertext = rsa_service.encrypt(data.plaintext)
         return {"ciphertext": ciphertext}
     except Exception as e:
@@ -23,7 +23,7 @@ async def decrypt(data: DecryptRequest):
     Decrypt ciphertext using the provided AES-encrypted private key.
     """
     try:
-        rsa_service = RSACipher(encrypted_private_key=data.key, public_key=None)
+        rsa_service = RSACipher(data.key)
         plaintext = rsa_service.decrypt(data.ciphertext)
         return {"plaintext": plaintext}
     except Exception as e:
