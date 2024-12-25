@@ -51,7 +51,7 @@
     cursor: not-allowed;
   }
   
-  .email-list, .hash-verification {
+  .view-email-list, .hash-verification {
     margin-top: 20px;
   }
   
@@ -60,12 +60,12 @@
     border: 1px solid #ddd;
   }
   
-  .email-list {
+  .view-email-list {
     list-style-type: none;
     padding: 0;
   }
   
-  .email-list .email-item {
+  .view-email-list .view-email-item {
     background-color: var(--primary-bg);
     border-radius: 4px;
     padding: 15px;
@@ -73,16 +73,16 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  .email-list .email-item:hover {
+  .view-email-list .view-email-item:hover {
     background-color: var(--highlight);
     color: var(--primary-bg);
   }
   
-  .email-item .email-sender {
+  .view-email-item .email-sender {
     font-weight: bold;
   }
   
-  .email-item .email-timestamp {
+  .view-email-item .email-timestamp {
     font-size: 0.9rem;
     color: var(--text-light);
   }
