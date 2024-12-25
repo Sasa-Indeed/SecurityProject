@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import "../styles/keyGen.css";
+import { generateKey } from "../services/api";
 
 const GenerateKeyPage = () => {
   const [keyType, setKeyType] = useState("");
@@ -12,7 +13,6 @@ const GenerateKeyPage = () => {
 
   const handleKeyTypeChange = (e) => setKeyType(e.target.value);
 
-  // function to generate key the resulting entry should be added in the key table
   const handleGenerateKey = async () => {
     if (!keyType) {
       alert("Please select a key type before generating!");
@@ -20,6 +20,7 @@ const GenerateKeyPage = () => {
     }
     try {
       console.log(`Request to generate a ${keyType.toUpperCase()} key...`);
+      await generateKey(keyType);
       alert(`${keyType.toUpperCase()} key generated successfully!`);
     } catch (error) {
       console.error("Error generating key:", error);
@@ -45,8 +46,8 @@ const GenerateKeyPage = () => {
             <option value="" disabled>
               Select key type
             </option>
-            <option value="rsa">RSA</option>
-            <option value="aes">AES</option>
+            <option value="RSA">RSA</option>
+            <option value="AES">AES</option>
           </select>
         </div>
 
