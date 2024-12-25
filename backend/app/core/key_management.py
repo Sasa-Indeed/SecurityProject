@@ -220,6 +220,21 @@ def fetch_keys(user_email: str):
 
     return transformed_keys
 
+def fetch_public_key(user_email: str):
+    """
+    Retrieve the public RSA key associated with a given user email.
+
+    Parameters:
+        user_email (str): The email address of the user.
+
+    Returns:
+        str: The public RSA key in PEM format.
+    """
+    key = keys_collection.find_one({"user_email": user_email, "key_type": "RSA"})
+    if key:
+        return key["key_data"]["public_key"]
+    return None
+
 
 
 def delete_key(key_id: str, user_email: str):
