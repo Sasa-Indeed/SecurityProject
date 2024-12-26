@@ -44,12 +44,15 @@ export const getSentEmails = async () => {
 
 export const viewEmail = async (emailId) => {
   try {
-    const response = await axiosInstance.get("/email/inbox/view-email",{email_id: emailId});
+    const response = await axiosInstance.get(`email/inbox/view-email`, {
+      params: { email_id: emailId },
+    });
     return response.data;
-  } catch(error) {
-    throw new Error(error.response?.data?.message || "Error viewing email");
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Error viewing email");
   }
-}
+};
+
 
 export const getKeys = async () => {
   try {
