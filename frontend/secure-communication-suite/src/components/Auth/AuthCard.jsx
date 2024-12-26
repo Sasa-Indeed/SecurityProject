@@ -13,6 +13,7 @@ const AuthCard = ({
   handleLogin,
   handleSignup,
   toggleForm,
+  isLoading
 }) => (
   <div className="auth-card" data-aos="fade-up">
     <AuthMessage isLogin={isLogin} />
@@ -27,6 +28,7 @@ const AuthCard = ({
       handleLogin={handleLogin}
       handleSignup={handleSignup}
       toggleForm={toggleForm}
+      isLoading={isLoading}
     />
   </div>
 );

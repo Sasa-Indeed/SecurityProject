@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/email.css';
 import {
   getKeys,
@@ -21,6 +21,7 @@ import {
 
 const ViewEmail = () => {
   const { emailId } = useParams();
+  const navigate = useNavigate();
   const [email, setEmail] = useState(null);
   const [decryptedKey, setDecryptedKey] = useState("");
   const [decryptedBody, setDecryptedBody] = useState("");
@@ -28,6 +29,7 @@ const ViewEmail = () => {
   const [isKeyDecrypted, setIsKeyDecrypted] = useState(false);
   const [isBodyDecrypted, setIsBodyDecrypted] = useState(false);
   const [isHashDecrypted, setIsHashDecrypted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -35,11 +37,13 @@ const ViewEmail = () => {
         const response = await viewEmail(emailId);
         setEmail(response);
       } catch (error) {
-        console.error("Error fetching email:", error);
+          navigate("/401", { replace: true });
+      } finally {
+        setLoading(false);
       }
     };
     fetchEmail();
-  }, [emailId]);
+  }, [emailId, navigate]);
 
   const handleDecryptKey = async () => {
     try {
@@ -100,84 +104,92 @@ const ViewEmail = () => {
     }
   };
 
-  return (
-    <div className="view-email-page">
-      <h2>View Email</h2>
-      {email ? (
-        <>
-          {/* Encrypted Key Section */}
-          <div className="view-email-section">
-            <h3>Encrypted AES Key:</h3>
-            <textarea value={email.encrypted_aes_key} readOnly className="view-email-textarea" />
-            <button onClick={handleDecryptKey} disabled={isKeyDecrypted} className="view-email-button">
-              {isKeyDecrypted ? "Key Decrypted" : "Decrypt Key"}
-            </button>
-          </div>
 
-          {/* Decrypted Key Section */}
-          {isKeyDecrypted && (
+  
+    if (loading) {
+      return <p>Loading...</p>; // Placeholder while loading
+    }
+  
+    if (!email) {
+      return null; // Prevent rendering when email is null
+    }
+  
+    return (
+      <div className="view-email-page">
+        <h2>View Email</h2>
+        {email ? (
+          <>
+            {/* Encrypted Key Section */}
             <div className="view-email-section">
-              <h3>Decrypted AES Key:</h3>
-              <textarea value={decryptedKey} readOnly className="view-email-textarea" />
-            </div>
-          )}
-
-          {/* Encrypted Email Body Section */}
-          <div className="view-email-section">
-            <h3>Encrypted Email Body:</h3>
-            <textarea value={email.body} readOnly className="view-email-textarea" />
-          </div>
-
-          {/* Decrypted Email Body Section */}
-          {isKeyDecrypted && (
-            <div className="view-email-section">
-              {isBodyDecrypted && (
-                <div>
-                  <h3>Decrypted Email Body:</h3>
-                  <textarea value={decryptedBody} readOnly className="view-email-textarea" />
-                </div>
-              )}
-              <button onClick={handleDecryptBody} disabled={isBodyDecrypted} className="view-email-button">
-                {isBodyDecrypted ? "Body Decrypted" : "Decrypt Body"}
+              <h3>Encrypted AES Key:</h3>
+              <textarea value={email.encrypted_aes_key} readOnly className="view-email-textarea" />
+              <button onClick={handleDecryptKey} disabled={isKeyDecrypted} className="view-email-button">
+                {isKeyDecrypted ? "Key Decrypted" : "Decrypt Key"}
               </button>
             </div>
-          )}
-
-          {/* Encrypted Hash Section */}
-          <div className="view-email-section">
-            <h3>Encrypted Hash:</h3>
-            <textarea value={email.hash} readOnly className="view-email-textarea" />
-          </div>
-
-          {/* Decrypted Hash Section */}
-          {isKeyDecrypted && (
+  
+            {/* Decrypted Key Section */}
+            {isKeyDecrypted && (
+              <div className="view-email-section">
+                <h3>Decrypted AES Key:</h3>
+                <textarea value={decryptedKey} readOnly className="view-email-textarea" />
+              </div>
+            )}
+  
+            {/* Encrypted Email Body Section */}
             <div className="view-email-section">
-              {isHashDecrypted && (
-                <div>
-                  <h3>Decrypted Hash:</h3>
-                  <textarea value={decryptedHash} readOnly className="view-email-textarea" />
-                </div>
-              )}
-              <button onClick={handleDecryptHash} disabled={isHashDecrypted} className="view-email-button">
-                {isHashDecrypted ? "Hash Decrypted" : "Decrypt Hash"}
-              </button>
+              <h3>Encrypted Email Body:</h3>
+              <textarea value={email.body} readOnly className="view-email-textarea" />
             </div>
-          )}
-
-          {/* Verify Email Integrity Section */}
-          {isBodyDecrypted && isHashDecrypted && (
+  
+            {/* Decrypted Email Body Section */}
+            {isKeyDecrypted && (
+              <div className="view-email-section">
+                {isBodyDecrypted && (
+                  <div>
+                    <h3>Decrypted Email Body:</h3>
+                    <textarea value={decryptedBody} readOnly className="view-email-textarea" />
+                  </div>
+                )}
+                <button onClick={handleDecryptBody} disabled={isBodyDecrypted} className="view-email-button">
+                  {isBodyDecrypted ? "Body Decrypted" : "Decrypt Body"}
+                </button>
+              </div>
+            )}
+  
+            {/* Encrypted Hash Section */}
+            <div className="view-email-section">
+              <h3>Encrypted Hash:</h3>
+              <textarea value={email.hash} readOnly className="view-email-textarea" />
+            </div>
+  
+            {/* Decrypted Hash Section */}
+            {isKeyDecrypted && (
+              <div className="view-email-section">
+                {isHashDecrypted && (
+                  <div>
+                    <h3>Decrypted Hash:</h3>
+                    <textarea value={decryptedHash} readOnly className="view-email-textarea" />
+                  </div>
+                )}
+                <button onClick={handleDecryptHash} disabled={isHashDecrypted} className="view-email-button">
+                  {isHashDecrypted ? "Hash Decrypted" : "Decrypt Hash"}
+                </button>
+              </div>
+            )}
+  
+            {/* Verify Email Integrity Section */}
+            {isBodyDecrypted && isHashDecrypted && (
               <button onClick={handleVerifyEmail} className="view-email-button">
                 Verify Email Integrity
               </button>
-          )}
-        </>
-      ) : (
-        <p>Loading email...</p>
-      )}
-    </div>
-  );
-};
-
-export default ViewEmail;
-
-
+            )}
+          </>
+        ) : (
+          <p>Loading email...</p>
+        )}
+      </div>
+    );
+  };
+  
+  export default ViewEmail;

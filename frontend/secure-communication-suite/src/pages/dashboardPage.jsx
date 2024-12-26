@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/dashboard.css";
 import { Link, useNavigate } from "react-router-dom";
 import { getInboxEmails, getSentEmails, getKeys, deleteKey } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const DashboardPage = () => {
   const [selectedSection, setSelectedSection] = useState("inbox");
@@ -13,6 +14,14 @@ const DashboardPage = () => {
   const [loadingKeys, setLoadingKeys] = useState(true);
 
   const navigate = useNavigate();
+  const { userEmail } = useAuth();
+
+  useEffect(() => {
+    if (!userEmail) {
+      console.log("in dashboard the user is:", userEmail);
+      navigate("/");
+    }
+  }, [userEmail, navigate]);
 
   const handleSectionChange = (section) => {
     setSelectedSection(section);
@@ -40,8 +49,10 @@ const DashboardPage = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    if (userEmail) { // Only fetch data if the user is logged in
+      fetchData();
+    }
+  }, [userEmail]);
 
   const handleEmailClick = (emailId) => {
     navigate(`/view-email/${emailId}`);
@@ -139,10 +150,10 @@ const DashboardPage = () => {
                 {sentEmails.map((email) => (
                   <div
                     className="email-tile"
-                    key={email.id}
-                    onClick={() => handleEmailClick(email.id)}
+                    key={email.email_id}
+                    onClick={() => handleEmailClick(email.email_id)}
                   >
-                    <span className="email-recipient">{email.recipient}</span>
+                    <span className="email-recipient">{email.recipient_email}</span>
                     <span className="email-subject">{email.subject}</span>
                     <span className="email-timestamp">{formatDate(email.timestamp)}</span>
                   </div>

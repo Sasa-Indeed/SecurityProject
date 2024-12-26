@@ -13,12 +13,13 @@ const AuthForm = ({
   handleLogin,
   handleSignup,
   toggleForm,
+  isLoading
 }) => {
   const [errors, setErrors] = useState({});
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const fieldErrors = {};
@@ -42,10 +43,14 @@ const AuthForm = ({
       return;
     }
 
-    if (isLogin) {
-      handleLogin();
-    } else {
-      handleSignup();
+    try {
+      if (isLogin) {
+        await handleLogin();
+      } else {
+        await handleSignup();
+      }
+    } catch (error) {
+      setErrors({ submit: error.message });
     }
   };
 
@@ -53,7 +58,7 @@ const AuthForm = ({
     <div className="auth-form" data-aos="fade-left" data-aos-delay="400">
       <h3>{isLogin ? "Login" : "Sign Up"}</h3>
       <form onSubmit={handleSubmit}>
-        <div className="form-group" data-aos="fade-in">
+        <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
             type="email"
@@ -61,11 +66,12 @@ const AuthForm = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
+            disabled={isLoading}
           />
           {errors.email && <div className="error-message">{errors.email}</div>}
         </div>
-        
-        <div className="form-group" data-aos="fade-in">
+
+        <div className="form-group">
           <label htmlFor="password">Password</label>
           <div className="password-input-container">
             <input
@@ -74,10 +80,11 @@ const AuthForm = ({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              disabled={isLoading}
             />
             <span
               className="password-toggle-icon"
-              onClick={() => setPasswordVisible((prevState) => !prevState)}
+              onClick={() => !isLoading && setPasswordVisible(!passwordVisible)}
             >
               {passwordVisible ? <FaEyeSlash /> : <FaEye />}
             </span>
@@ -86,7 +93,7 @@ const AuthForm = ({
         </div>
 
         {!isLogin && (
-          <div className="form-group" data-aos="fade-in">
+          <div className="form-group">
             <label htmlFor="confirmPassword">Confirm Password</label>
             <div className="password-input-container">
               <input
@@ -95,10 +102,11 @@ const AuthForm = ({
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm your password"
+                disabled={isLoading}
               />
               <span
                 className="password-toggle-icon"
-                onClick={() => setConfirmPasswordVisible((prevState) => !prevState)}
+                onClick={() => !isLoading && setConfirmPasswordVisible(!confirmPasswordVisible)}
               >
                 {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
               </span>
@@ -109,18 +117,27 @@ const AuthForm = ({
           </div>
         )}
 
-        <input
+        {errors.submit && (
+          <div className="error-message text-center mb-4">{errors.submit}</div>
+        )}
+
+        <button
           type="submit"
-          value={isLogin ? "Login" : "Sign Up"}
-          className="auth-submit"
-          data-aos="zoom-in"
-          data-aos-delay="600"
-        />
+          className={`auth-submit ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={isLoading}
+        >
+          {isLogin
+            ? (isLoading ? "Logging in..." : "Login")
+            : (isLoading ? "Signing up..." : "Sign Up")
+          }
+        </button>
       </form>
-      
-      <p className="toggle-link" data-aos="fade-in" data-aos-delay="800">
+
+      <p className="toggle-link">
         {isLogin ? "Not registered yet?" : "Already have an account?"}{" "}
-        <span onClick={toggleForm}>{isLogin ? "Sign Up" : "Login"}</span>
+        <span onClick={() => !isLoading && toggleForm()}>
+          {isLogin ? "Sign Up" : "Login"}
+        </span>
       </p>
     </div>
   );

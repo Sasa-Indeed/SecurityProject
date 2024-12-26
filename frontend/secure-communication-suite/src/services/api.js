@@ -1,23 +1,56 @@
 import axios from "axios";
+import { cryptoManager } from './cryptoUtils';
+import { createHash } from 'crypto-browserify';
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8000",
   withCredentials: true,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-export const login = async (email, password) => {
-  try {
-    const response = await axiosInstance.post('/auth/login', { email : email, password : password });
-    console.log("Response headers:", response.headers);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || "Login failed");
-  }
-};
+// Login function that implements the challenge-response protocol
+export const login = async(email, password) =>{
+    try {
+      
+      const challengeResponse = await axiosInstance.post('/auth/challenge', { email: email });
+
+      if (!challengeResponse.status === 200) {
+        console.error('Failed to get challenge:', challengeResponse);
+        const errorData = await challengeResponse.data;
+        throw new Error(errorData.detail || 'Failed to get challenge');
+      }
+
+      const challenge = await challengeResponse.data.challenge;
+      const salt = await challengeResponse.data.salt;
+    
+      // Step 2: Hash password using server's salt
+      const hashedPassword = await cryptoManager.hashPasswordWithSalt(password, salt);
+
+      // Step 3: Derive key from bcrypt hash (same as server)
+      const key = createHash('sha256').update(hashedPassword).digest();
+
+      // Step 4: Encrypt challenge
+      const encryptedChallenge = cryptoManager.encryptChallenge(key, challenge);
+
+      const validationResponse = await axiosInstance.post('/auth/validate-challenge', { email: email, encrypted_challenge: encryptedChallenge});
+
+      if (!validationResponse.status === 200) {
+        const errorData = await validationResponse.data;
+        console.error('Validation failed:', errorData);
+        throw new Error(errorData.detail || 'Login failed');
+      }
+
+      return await validationResponse.data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  };
 
 export const signup = async (email, password) => {
   try {
     const response = await axiosInstance.post('/auth/register', { email : email, password : password });
+    await login(email, password);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Signup failed");

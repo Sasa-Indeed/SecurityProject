@@ -14,6 +14,7 @@ import GenerateKeyPage from './pages/keyGenerationPage';
 import ComposeEmailPage from './pages/emailCompositionPage';
 import ViewEmailPage from './pages/emailViewerPage';
 import NotFound from './pages/notFoundPage';
+import NotAuthPage from './pages/notAuthorized';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
       <Route path="/compose-email" element={<ComposeEmailPage />} />
       <Route path="/view-email/:emailId" element={<ViewEmailPage />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/401" element={<NotAuthPage />} />
     </Routes>
     <Footer />
   </Router>

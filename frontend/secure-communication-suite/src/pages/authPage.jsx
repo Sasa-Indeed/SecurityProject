@@ -12,6 +12,7 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { setUserEmail } = useAuth();
 
@@ -28,28 +29,30 @@ const AuthPage = () => {
 
   const handleLogin = async () => {
     try {
-
       const tempEmail = email;
+      setIsLoading(true);
       const data = await login(email, password);
+      console.log("temp email:", tempEmail);
       setUserEmail(tempEmail);
       console.log("Login success:", data);
       console.log("Logged in as:", tempEmail);
-  
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error.message);
-      alert(`Error: ${error.message}`);
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSignup = async () => {
     try {
-      console.log("Signup with:", { email, password });
+      setIsLoading(true);
+      const tempEmail = email;
       const data = await signup(email, password);
-      setUserEmail(email);
-      console.log(setUserEmail(email))
-      console.log("Signup success:", data);
+      setUserEmail(tempEmail);
       navigate("/dashboard");
+      console.log("Signup success:", data);
     } catch (error) {
       console.error("Signup error:", error.message);
       alert(`Error: ${error.message}`);
@@ -69,6 +72,7 @@ const AuthPage = () => {
         handleLogin={handleLogin}
         handleSignup={handleSignup}
         toggleForm={toggleForm}
+        isLoading={isLoading}
       />
     </div>
   );

@@ -5,7 +5,9 @@ from .hashing import hash_password, verify_password
 from ..database.session import db_instance
 import os
 from dotenv import load_dotenv
-import secrets
+import hashlib
+from backend.app.core.challenge_auth.challenge_manager import challenge_manager
+from backend.app.core.challenge_auth.encryption_manager import encryption_manager
 
 load_dotenv()
 
@@ -65,3 +67,45 @@ def get_current_user(request: Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials"
         )
+
+def request_login_challenge(email: str):
+    """Handle login challenge request business logic"""
+    users = db_instance.get_collection("users")
+    user = users.find_one({"email": email})
+
+    if not user:
+        raise ValueError("User not found")
+
+    # Extract salt from stored bcrypt hash (first 29 chars)
+    bcrypt_salt = user["hashed_password"][:29]
+    challenge = challenge_manager.generate_challenge(email)
+
+    return {
+        "challenge": challenge,
+        "salt": bcrypt_salt
+    }
+
+
+def validate_login_challenge(email: str, encrypted_challenge: str):
+    """Handle challenge validation business logic"""
+    users = db_instance.get_collection("users")
+    user = users.find_one({"email": email})
+
+    if not user:
+        raise ValueError("User not found")
+
+    # Get stored bcrypt hash and derive key
+    hashed_password = user["hashed_password"]
+    key = hashlib.sha256(hashed_password.encode()).digest()
+
+    # Decrypt and validate challenge
+    decrypted_challenge = encryption_manager.decrypt(
+        key,
+        encrypted_challenge
+    )
+
+    if not challenge_manager.validate_challenge(email, decrypted_challenge):
+        raise ValueError("Invalid challenge response")
+
+    # Create and return access token
+    return create_access_token(data={"sub": email})
