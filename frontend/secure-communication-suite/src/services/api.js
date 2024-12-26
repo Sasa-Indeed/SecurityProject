@@ -1,4 +1,5 @@
 import axios from "axios";
+import { cryptoManager } from './cryptoUtils';
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8000",
@@ -7,11 +8,10 @@ const axiosInstance = axios.create({
 
 export const login = async (email, password) => {
   try {
-    const response = await axiosInstance.post('/auth/login', { email : email, password : password });
-    console.log("Response headers:", response.headers);
-    return response.data;
+    const response = await cryptoManager.login(email, password);
+    return response;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Login failed");
+    throw new Error('Login failed. Please try again.');
   }
 };
 
