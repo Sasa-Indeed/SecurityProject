@@ -1,6 +1,5 @@
 :root {
   --compose-bg-light: #f0f3fa;
-  --compose-bg-dark: #1e2d3d;
   --compose-text-dark: #111c2d;
   --compose-accent:  #d5370b;
   --compose-border-color: #2b2a2c;
@@ -75,4 +74,93 @@
 .compose-button:disabled {
   background-color: var(--compose-border-color);
   cursor: not-allowed;
+}
+
+.view-email-page {
+  background-color: var(--compose-bg-light);
+  color: var(--compose-text-dark);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.view-email-page h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--compose-accent);
+}
+
+.view-email-section {
+  margin-bottom: 2rem;
+  border-radius: 6px;
+  padding: 1rem;
+  background: var(--compose-text-dark);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.view-email-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: var(--compose-bg-light);
+}
+
+.view-email-textarea {
+  width: 100%;
+  height: 80px;
+  resize: none;
+  border: 1px solid var(--compose-border-color);
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: var(--compose-text-dark);
+  background: var(--compose-bg-light);
+}
+
+.view-email-textarea[readonly] {
+  cursor: not-allowed;
+}
+
+.view-email-button {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: var(--compose-bg-light);
+  background-color: var(--compose-btn-bg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
+}
+
+.view-email-button:hover {
+  background-color: var(--compose-btn-hover-bg);
+}
+
+.view-email-button:disabled {
+  background-color: var(--compose-border-color);
+  cursor: not-allowed;
+}
+
+.view-email-p {
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .view-email-page {
+    padding: 1rem;
+  }
+
+  .view-email-section {
+    padding: 0.8rem;
+  }
+
+  .view-email-button {
+    width: 100%;
+  }
 }
