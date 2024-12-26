@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { validateSession, logout } from '../services/api';
 import '../styles/header.css';
 import '../styles/auth.css';
+import {useAuth} from '../context/AuthContext';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const {setUserEmail} = useAuth();
 
   useEffect(() => {
     checkSession();
@@ -27,7 +29,8 @@ const Header = () => {
     try {
       await logout();
       setIsLoggedIn(false);
-      navigate("/login");
+      navigate("/");
+      setUserEmail(null);
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -56,5 +59,4 @@ const Header = () => {
     </Navbar>
   );
 };
-
 export default Header;

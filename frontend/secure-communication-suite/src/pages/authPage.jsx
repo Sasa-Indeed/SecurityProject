@@ -29,10 +29,13 @@ const AuthPage = () => {
 
   const handleLogin = async () => {
     try {
+      const tempEmail = email;
       setIsLoading(true);
-      const response = await login(email, password);
-      setUserEmail(email);
-      console.log("Login successful");
+      const data = await login(email, password);
+      console.log("temp email:", tempEmail);
+      setUserEmail(tempEmail);
+      console.log("Login success:", data);
+      console.log("Logged in as:", tempEmail);
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error.message);
@@ -45,11 +48,11 @@ const AuthPage = () => {
   const handleSignup = async () => {
     try {
       setIsLoading(true);
+      const tempEmail = email;
       const data = await signup(email, password);
-      setUserEmail(email);
-      console.log(setUserEmail(email))
-      console.log("Signup success:", data);
+      setUserEmail(tempEmail);
       navigate("/dashboard");
+      console.log("Signup success:", data);
     } catch (error) {
       console.error("Signup error:", error.message);
       alert(`Error: ${error.message}`);
