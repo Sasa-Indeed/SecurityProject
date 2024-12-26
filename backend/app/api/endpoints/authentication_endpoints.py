@@ -49,15 +49,18 @@ async def get_challenge(request: ChallengeRequest):
         logger.error(f"User not found: {request.email}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    # Extract salt from stored bcrypt hash (first 29 chars)
+    bcrypt_salt = user["hashed_password"][:29]
+    logger.debug(f"Extracted bcrypt salt: {bcrypt_salt}")
+
     challenge = challenge_manager.generate_challenge(request.email)
     logger.info(f"Generated challenge for {request.email}")
 
-    # Return both challenge and stored hash
+    # Return both challenge and salt
     return {
         "challenge": challenge,
-        "stored_hash": user["hashed_password"]  # Send the stored hash to client
+        "salt": bcrypt_salt
     }
-
 
 @router.post("/validate-challenge")
 async def validate_challenge_endpoint(request: ChallengeValidationRequest):
@@ -74,11 +77,8 @@ async def validate_challenge_endpoint(request: ChallengeValidationRequest):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     try:
-        # Get stored hash and derive key
+        # Get stored bcrypt hash and derive key
         hashed_password = user["hashed_password"]
-        logger.debug(f"Retrieved hashed password: {hashed_password}")
-
-        # Derive key in exactly the same way as frontend
         key = hashlib.sha256(hashed_password.encode()).digest()
         logger.debug(f"Using key (hex): {key.hex()}")
 
@@ -89,17 +89,19 @@ async def validate_challenge_endpoint(request: ChallengeValidationRequest):
         )
         logger.debug(f"Decrypted challenge: {decrypted_challenge}")
 
-        # Validate
-        validation_result = challenge_manager.validate_challenge(request.email, decrypted_challenge)
+        # Validate challenge
+        validation_result = challenge_manager.validate_challenge(
+            request.email,
+            decrypted_challenge
+        )
         if not validation_result:
             logger.error("Challenge validation failed")
-            logger.debug(f"Expected challenge != Decrypted challenge")
-            raise HTTPException(status_code=401, detail="Invalid challenge response")
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
     except Exception as e:
         logger.error(f"Challenge validation error: {str(e)}")
         logger.exception("Detailed error information:")
-        raise HTTPException(status_code=401, detail="Invalid challenge response")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     # Create access token
     access_token = create_access_token(data={"sub": request.email})

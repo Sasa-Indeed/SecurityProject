@@ -1,6 +1,7 @@
 // cryptoUtils.js
 import { Buffer } from 'buffer';
 import { createCipheriv, createHash } from 'crypto-browserify';
+import bcrypt from 'bcryptjs';
 
 const API_BASE_URL = 'http://localhost:8000/auth';
 
@@ -9,21 +10,11 @@ export class CryptoManager {
     this.algorithm = 'aes-256-cbc';
   }
 
-  // Use stored hash to derive encryption key
-  deriveKey(storedHash) {
+  async hashPasswordWithSalt(password, salt) {
     try {
-      // Use SHA-256 on the stored hash
-      const hash = createHash('sha256');
-      hash.update(storedHash);
-      const key = hash.digest();
-
-      console.log('Stored hash used for key derivation:', storedHash);
-      console.log('Derived key length:', key.length);
-      console.log('Derived key (hex):', key.toString('hex'));
-
-      return key;
+      return bcrypt.hashSync(password, salt);
     } catch (error) {
-      console.error('Key derivation error:', error);
+      console.error('Password hashing error:', error);
       throw error;
     }
   }
@@ -31,34 +22,25 @@ export class CryptoManager {
   // Encrypt challenge using derived key
   encryptChallenge(key, challenge) {
     try {
-      console.log('Input challenge:', challenge);
-      console.log('Key length:', key.length);
-
       // Generate IV (16 bytes for AES)
       const iv = Buffer.alloc(16);
       crypto.getRandomValues(iv);
-      console.log('Generated IV:', iv.toString('hex'));
 
       // Create cipher
       const cipher = createCipheriv(this.algorithm, key, iv);
 
       // Convert base64 challenge to Buffer
       const challengeBuffer = Buffer.from(challenge, 'base64');
-      console.log('Challenge buffer length:', challengeBuffer.length);
 
       // Encrypt without padding since challenge is fixed size
       const ciphertext = Buffer.concat([
         cipher.update(challengeBuffer),
         cipher.final()
       ]);
-      console.log('Ciphertext length:', ciphertext.length);
 
       // Combine IV and ciphertext
       const combined = Buffer.concat([iv, ciphertext]);
-      const result = combined.toString('base64');
-      console.log('Final encrypted result length:', result.length);
-
-      return result;
+      return combined.toString('base64');
     } catch (error) {
       console.error('Encryption error:', error);
       throw error;
@@ -70,7 +52,7 @@ export class CryptoManager {
     try {
       console.log('Starting login process for:', email);
 
-      // Step 1: Request challenge
+      // Step 1: Request challenge and salt
       const challengeResponse = await fetch(`${API_BASE_URL}/challenge`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -83,18 +65,22 @@ export class CryptoManager {
         throw new Error(errorData.detail || 'Failed to get challenge');
       }
 
-      const { challenge, stored_hash } = await challengeResponse.json();
-      console.log('Received challenge and stored hash');
+      const { challenge, salt } = await challengeResponse.json();
+      console.log('Received challenge and salt');
 
-      // Step 2: Derive key from stored hash
-      const key = this.deriveKey(stored_hash);
-      console.log('Key derived successfully');
+      // Step 2: Hash password using server's salt
+      const hashedPassword = await this.hashPasswordWithSalt(password, salt);
+      console.log('Password hashed with server salt');
 
-      // Step 3: Encrypt challenge
+      // Step 3: Derive key from bcrypt hash (same as server)
+      const key = createHash('sha256').update(hashedPassword).digest();
+      console.log('Key derived from bcrypt hash');
+
+      // Step 4: Encrypt challenge
       const encryptedChallenge = this.encryptChallenge(key, challenge);
       console.log('Challenge encrypted successfully');
 
-      // Step 4: Send encrypted challenge
+      // Step 5: Send encrypted challenge
       const validationResponse = await fetch(`${API_BASE_URL}/validate-challenge`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
